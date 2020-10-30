@@ -19,11 +19,12 @@ Gem::Specification.new do |spec|
   spec.metadata['bug_tracker_uri'] = 'https://bitbucket.org/legion-io/lex-slack/issues'
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'legionio'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'simplecov'
 
   spec.add_dependency 'faraday'
+  spec.add_dependency 'faraday_middleware'
+  spec.add_dependency 'multi_json'
 end
