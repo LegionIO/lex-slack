@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'lib/legion/extensions/slack/version'
 
 Gem::Specification.new do |spec|
@@ -17,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.metadata['documentation_uri'] = 'https://github.com/LegionIO/lex-slack'
   spec.metadata['changelog_uri'] = 'https://github.com/LegionIO/lex-slack'
   spec.metadata['bug_tracker_uri'] = 'https://github.com/LegionIO/lex-slack/issues'
+  spec.metadata['rubygems_mfa_required'] = 'true'
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'rake'

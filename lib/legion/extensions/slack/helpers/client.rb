@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'faraday'
 require 'faraday_middleware'
 
@@ -9,7 +11,7 @@ module Legion
           def client(**)
             Faraday.new(
               url:     'https://hooks.slack.com',
-              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
             ) do |connection|
               connection.request :json
               connection.response :json, content_type: /\bjson$/
