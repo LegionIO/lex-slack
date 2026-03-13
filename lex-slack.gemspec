@@ -8,15 +8,15 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'LEX::Slack'
   spec.description   = 'Connects Legion to Slack'
-  spec.homepage      = 'https://bitbucket.org/legion-io/lex-slack'
+  spec.homepage      = 'https://github.com/LegionIO/lex-slack'
   spec.license       = 'MIT'
-  spec.required_ruby_version = Gem::Requirement.new('>= 2.5.0')
+  spec.required_ruby_version = '>= 3.4'
 
   spec.metadata['homepage_uri'] = spec.homepage
-  spec.metadata['source_code_uri'] = 'https://bitbucket.org/legion-io/lex-slack/src'
-  spec.metadata['documentation_uri'] = 'https://legionio.atlassian.net/wiki/spaces/LEX/pages/631504974'
-  spec.metadata['changelog_uri'] = 'https://legionio.atlassian.net/wiki/spaces/LEX/pages/631570484'
-  spec.metadata['bug_tracker_uri'] = 'https://bitbucket.org/legion-io/lex-slack/issues'
+  spec.metadata['source_code_uri'] = 'https://github.com/LegionIO/lex-slack'
+  spec.metadata['documentation_uri'] = 'https://github.com/LegionIO/lex-slack'
+  spec.metadata['changelog_uri'] = 'https://github.com/LegionIO/lex-slack'
+  spec.metadata['bug_tracker_uri'] = 'https://github.com/LegionIO/lex-slack/issues'
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'rake'
@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'simplecov'
 
-  spec.add_dependency 'faraday'
+  spec.add_dependency 'faraday', '>= 2.0'
   spec.add_dependency 'faraday_middleware'
   spec.add_dependency 'multi_json'
 end
