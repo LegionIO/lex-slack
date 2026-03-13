@@ -1,6 +1,6 @@
 # lex-slack
 
-Slack integration for [LegionIO](https://github.com/LegionIO/LegionIO). Send chat messages and query user information via the Slack API.
+Slack integration for [LegionIO](https://github.com/LegionIO/LegionIO). Send chat messages via incoming webhooks and query user information via the Slack API.
 
 ## Installation
 
@@ -8,16 +8,35 @@ Slack integration for [LegionIO](https://github.com/LegionIO/LegionIO). Send cha
 gem install lex-slack
 ```
 
-## Functions
+Or add to your Gemfile:
 
-- **Chat** - Send messages to Slack channels
-- **User** - Query Slack user information
+```ruby
+gem 'lex-slack'
+```
+
+## Usage
+
+Send a message to a Slack channel using an incoming webhook:
+
+```json
+{
+  "message": "Hello from Legion!",
+  "webhook": "/services/T.../B.../..."
+}
+```
+
+## Runners
+
+| Runner | Methods |
+|--------|---------|
+| Chat | `send(message:, webhook:)` - post to Slack incoming webhook |
+| User | User information queries |
 
 ## Requirements
 
 - Ruby >= 3.4
 - [LegionIO](https://github.com/LegionIO/LegionIO) framework
-- Slack API token
+- Slack incoming webhook URL
 
 ## License
 
