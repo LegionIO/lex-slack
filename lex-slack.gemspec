@@ -28,6 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov'
 
   spec.add_dependency 'faraday', '>= 2.0'
-  spec.add_dependency 'faraday_middleware'
   spec.add_dependency 'multi_json'
 end
