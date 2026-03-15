@@ -25,12 +25,37 @@ Send a message to a Slack channel using an incoming webhook:
 }
 ```
 
+## Standalone Client
+
+Use `Legion::Extensions::Slack::Client` outside the full LegionIO framework.
+
+```ruby
+require 'legion/extensions/slack'
+# Webhook mode
+client = Legion::Extensions::Slack::Client.new(webhook: 'https://hooks.slack.com/...')
+client.send(message: 'Hello from Legion!')
+
+# API mode
+client = Legion::Extensions::Slack::Client.new(token: 'xoxb-...')
+client.list_users
+```
+
 ## Runners
 
-| Runner | Methods |
-|--------|---------|
-| Chat | `send(message:, webhook:)` - post to Slack incoming webhook |
-| User | User information queries |
+### Chat
+
+| Method | Parameters | Description |
+|--------|-----------|-------------|
+| `send` | `message:`, `webhook:` | Post a message to a Slack incoming webhook |
+
+### User
+
+| Method | Parameters | Description |
+|--------|-----------|-------------|
+| `list_users` | (none) | List all workspace users |
+| `user_info` | `user_id:` | Fetch info for a specific user |
+| `set_presence` | `presence:` | Set the bot's presence (`auto` or `away`) |
+| `get_presence` | `user_id:` | Get presence status for a user |
 
 ## Requirements
 
