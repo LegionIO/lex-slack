@@ -16,7 +16,7 @@ module Legion
             { success: response.success?, body: response.body }
           end
 
-          include Legion::Extensions::Helpers::Lex
+          include Legion::Extensions::Helpers::Lex if defined?(Legion::Extensions::Helpers::Lex)
         end
       end
     end
