@@ -8,6 +8,7 @@
 
 Legion Extension that connects LegionIO to Slack. Provides runners for sending chat messages via incoming webhooks and querying user information via the Slack API.
 
+**Version**: 0.2.0
 **GitHub**: https://github.com/LegionIO/lex-slack
 **License**: MIT
 
@@ -28,8 +29,9 @@ Legion::Extensions::Slack
 |------|---------|
 | `lib/legion/extensions/slack.rb` | Entry point, extension registration |
 | `lib/legion/extensions/slack/runners/chat.rb` | `send(message:, webhook:)` - posts JSON to webhook URL |
-| `lib/legion/extensions/slack/runners/user.rb` | User queries |
+| `lib/legion/extensions/slack/runners/user.rb` | `list_users`, `user_info`, `set_presence`, `get_presence` via Slack Web API |
 | `lib/legion/extensions/slack/helpers/client.rb` | Faraday client (hooks.slack.com, JSON content-type) |
+| `lib/legion/extensions/slack/client.rb` | Standalone `Client` class accepting `webhook:` and `token:` opts |
 
 ## Runner: Chat
 
@@ -40,6 +42,18 @@ Legion::Extensions::Slack
 
 The `send` method posts `{ text: message }` as JSON to the Slack incoming webhook URL.
 
+## Runner: User
+
+Methods use the Slack Web API (Bearer token auth):
+- `list_users` — list all workspace users
+- `user_info(user_id:)` — fetch info for a specific user
+- `set_presence(presence:)` — set the bot's presence (`auto` or `away`)
+- `get_presence(user_id:)` — get presence status for a user
+
+## Standalone Client
+
+`Client` accepts `webhook:` and `token:` keyword options and includes both `Chat` and `User` runners, enabling use outside the Legion framework.
+
 ## Dependencies
 
 | Gem | Purpose |
@@ -48,6 +62,8 @@ The `send` method posts `{ text: message }` as JSON to the Slack incoming webhoo
 | `multi_json` | JSON parser abstraction |
 
 ## Development
+
+21 specs total across `spec/legion/extensions/slack/client_spec.rb`, `runners/chat_spec.rb`, and `runners/user_spec.rb`.
 
 ```bash
 bundle install
