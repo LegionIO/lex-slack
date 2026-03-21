@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['matthewdiverson@gmail.com']
 
   spec.summary       = 'LEX::Slack'
-  spec.description   = 'Connects Legion to Slack'
+  spec.description   = 'Connects Legion to Slack via Web API and incoming webhooks'
   spec.homepage      = 'https://github.com/LegionIO/lex-slack'
   spec.license       = 'MIT'
   spec.required_ruby_version = '>= 3.4'
@@ -20,13 +20,10 @@ Gem::Specification.new do |spec|
   spec.metadata['changelog_uri'] = 'https://github.com/LegionIO/lex-slack'
   spec.metadata['bug_tracker_uri'] = 'https://github.com/LegionIO/lex-slack/issues'
   spec.metadata['rubygems_mfa_required'] = 'true'
+  spec.files = Dir.chdir(File.expand_path(__dir__)) do
+    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  end
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'rspec'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'simplecov'
-
   spec.add_dependency 'faraday', '>= 2.0'
-  spec.add_dependency 'multi_json'
 end

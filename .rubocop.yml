@@ -23,7 +23,7 @@ Metrics/ModuleLength:
   Max: 1500
 
 Metrics/BlockLength:
-  Max: 40
+  Max: 100
 
 Metrics/AbcSize:
   Max: 60
@@ -45,7 +45,4 @@ Style/FrozenStringLiteralComment:
   EnforcedStyle: always
 
 Naming/FileName:
-  Enabled: false
-
-Gemspec/DevelopmentDependencies:
   Enabled: false

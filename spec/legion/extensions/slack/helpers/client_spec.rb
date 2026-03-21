@@ -1,40 +1,54 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'faraday'
-require 'legion/extensions/slack/helpers/client'
-
 RSpec.describe Legion::Extensions::Slack::Helpers::Client do
-  let(:host) do
-    klass = Class.new do
-      include Legion::Extensions::Slack::Helpers::Client
+  let(:test_obj) { Object.new.extend(described_class) }
+
+  describe '#api_connection' do
+    it 'returns a Faraday::Connection' do
+      conn = test_obj.api_connection
+      expect(conn).to be_a(Faraday::Connection)
     end
-    klass.new
+
+    it 'targets https://slack.com/api/ by default' do
+      conn = test_obj.api_connection
+      expect(conn.url_prefix.to_s).to eq('https://slack.com/api/')
+    end
+
+    it 'sets Authorization header when token provided' do
+      conn = test_obj.api_connection(token: 'xoxb-test')
+      expect(conn.headers['Authorization']).to eq('Bearer xoxb-test')
+    end
+
+    it 'omits Authorization header when no token' do
+      conn = test_obj.api_connection
+      expect(conn.headers['Authorization']).to be_nil
+    end
+
+    it 'allows base_url override' do
+      conn = test_obj.api_connection(base_url: 'https://custom.slack.com/api/')
+      expect(conn.url_prefix.to_s).to eq('https://custom.slack.com/api/')
+    end
   end
 
-  describe '#client' do
+  describe '#webhook_connection' do
     it 'returns a Faraday::Connection' do
-      expect(host.client).to be_a(Faraday::Connection)
+      conn = test_obj.webhook_connection
+      expect(conn).to be_a(Faraday::Connection)
     end
 
-    it 'targets https://hooks.slack.com' do
-      expect(host.client.url_prefix.to_s).to include('hooks.slack.com')
+    it 'targets https://hooks.slack.com by default' do
+      conn = test_obj.webhook_connection
+      expect(conn.url_prefix.to_s).to eq('https://hooks.slack.com/')
     end
 
-    it 'sets Content-Type to application/json' do
-      headers = host.client.headers
-      expect(headers['Content-Type']).to eq('application/json')
+    it 'allows base_url override' do
+      conn = test_obj.webhook_connection(base_url: 'https://custom.hooks.slack.com')
+      expect(conn.url_prefix.to_s).to eq('https://custom.hooks.slack.com/')
     end
 
-    it 'sets Accept to application/json' do
-      headers = host.client.headers
-      expect(headers['Accept']).to eq('application/json')
-    end
-
-    it 'returns a new connection on each call' do
-      first  = host.client
-      second = host.client
-      expect(first).not_to be(second)
+    it 'does not set Authorization header' do
+      conn = test_obj.webhook_connection
+      expect(conn.headers['Authorization']).to be_nil
     end
   end
 end
