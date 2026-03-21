@@ -6,9 +6,9 @@
 
 ## Purpose
 
-Legion Extension that connects LegionIO to Slack. Provides runners for sending chat messages via incoming webhooks and querying user information via the Slack API.
+Comprehensive Legion Extension connecting LegionIO to Slack. Covers the Slack Web API (messaging, conversations, users, reactions, files, pins, bookmarks, reminders, usergroups, views, search), incoming webhooks, Block Kit builder, and a configurable message polling actor.
 
-**Version**: 0.2.0
+**Version**: 0.3.0
 **GitHub**: https://github.com/LegionIO/lex-slack
 **License**: MIT
 
@@ -16,54 +16,67 @@ Legion Extension that connects LegionIO to Slack. Provides runners for sending c
 
 ```
 Legion::Extensions::Slack
-├── Runners/
-│   ├── Chat               # Send messages to Slack via incoming webhook
-│   └── User               # Query Slack user information
-└── Helpers/
-    └── Client             # Faraday client pointing to https://hooks.slack.com
++-- Helpers/
+|   +-- Client             # Named builders: api_connection (Web API), webhook_connection
++-- Runners/
+|   +-- Blocks             # Pure Block Kit builder (no HTTP)
+|   +-- Chat               # post_message, send_webhook, update, delete, schedule (6 methods)
+|   +-- Conversations      # list, info, history, replies, members, join, leave, invite, open, create, archive, topic (12 methods)
+|   +-- Users              # list, info, lookup_by_email, presence (5 methods)
+|   +-- Reactions          # add, remove, get, list (4 methods)
+|   +-- Files              # upload (two-step), list, info, delete, share (5 methods)
+|   +-- Pins               # add, remove, list (3 methods)
+|   +-- Bookmarks          # add, edit, remove, list (4 methods)
+|   +-- Reminders          # add, complete, delete, info, list (5 methods)
+|   +-- Usergroups         # CRUD + users.list/update (7 methods)
+|   +-- Views              # open, push, update, publish (4 methods)
+|   +-- Search             # search_messages, search_files (2 methods)
++-- Actors/
+|   +-- MessagePoller      # Poll conversations.history (disabled by default)
++-- Client                 # Standalone client including all runners
 ```
 
-## Key Files
+## Connection Builders
 
-| Path | Purpose |
-|------|---------|
-| `lib/legion/extensions/slack.rb` | Entry point, extension registration |
-| `lib/legion/extensions/slack/runners/chat.rb` | `send(message:, webhook:)` - posts JSON to webhook URL |
-| `lib/legion/extensions/slack/runners/user.rb` | `list_users`, `user_info`, `set_presence`, `get_presence` via Slack Web API |
-| `lib/legion/extensions/slack/helpers/client.rb` | Faraday client (hooks.slack.com, JSON content-type) |
-| `lib/legion/extensions/slack/client.rb` | Standalone `Client` class accepting `webhook:` and `token:` opts |
+Two named Faraday connection builders in `Helpers::Client`:
+- `api_connection(token:, base_url:, **)` — targets `https://slack.com/api/`, Bearer token auth
+- `webhook_connection(base_url:, **)` — targets `https://hooks.slack.com`, no auth
 
-## Runner: Chat
-
-```ruby
-# Payload
-{ message: "Hello from Legion!", webhook: "/services/T.../B.../..." }
-```
-
-The `send` method posts `{ text: message }` as JSON to the Slack incoming webhook URL.
-
-## Runner: User
-
-Methods use the Slack Web API (Bearer token auth):
-- `list_users` — list all workspace users
-- `user_info(user_id:)` — fetch info for a specific user
-- `set_presence(presence:)` — set the bot's presence (`auto` or `away`)
-- `get_presence(user_id:)` — get presence status for a user
+All runners use `api_connection` except `Chat#send_webhook` which uses `webhook_connection`.
 
 ## Standalone Client
 
-`Client` accepts `webhook:` and `token:` keyword options and includes both `Chat` and `User` runners, enabling use outside the Legion framework.
+`Client.new(token:, webhook:, **)` stores credentials in `@opts` and injects them into every connection call via `super(**@opts, **override)`. All 12 runner modules are included. Per-call token override supported.
+
+## Actor: MessagePoller
+
+Configurable polling actor, disabled by default. Settings:
+
+```json
+{
+  "lex-slack": {
+    "token": "xoxb-...",
+    "poller": {
+      "enabled": false,
+      "interval": 30,
+      "channels": [],
+      "limit": 50
+    }
+  }
+}
+```
+
+Uses in-memory high-water mark per channel. Publishes to Legion transport if available.
 
 ## Dependencies
 
 | Gem | Purpose |
 |-----|---------|
 | `faraday` (>= 2.0) | HTTP client |
-| `multi_json` | JSON parser abstraction |
 
 ## Development
 
-21 specs total across `spec/legion/extensions/slack/client_spec.rb`, `runners/chat_spec.rb`, and `runners/user_spec.rb`.
+141 specs across 16 spec files.
 
 ```bash
 bundle install
