@@ -6,6 +6,7 @@ module Legion
       module Actor
         class MessagePoller
           include Helpers::Client
+          include Legion::Logging::Helper
 
           def initialize
             @hwm = {}
@@ -60,11 +61,11 @@ module Legion
                 namespace: 'Legion::Extensions::Slack',
                 args:      { channel: channel_id, message: message }
               )
-            elsif defined?(Legion::Logging)
-              Legion::Logging::Logger.info "Slack message in #{channel_id}: #{message['text']}"
+            else
+              log.info "Slack message in #{channel_id}: #{message['text']}"
             end
           rescue StandardError => e
-            Legion::Logging::Logger.warn "Failed to publish slack message: #{e.message}" if defined?(Legion::Logging)
+            log.warn "Failed to publish slack message: #{e.message}"
           end
 
           def settings
