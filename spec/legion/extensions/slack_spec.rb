@@ -2,7 +2,7 @@
 
 RSpec.describe Legion::Extensions::Slack do
   it 'has a version number' do
-    expect(Legion::Extensions::Slack::VERSION).to eq('0.3.1')
+    expect(Legion::Extensions::Slack::VERSION).to eq('0.3.2')
   end
 
   it 'defines Helpers::Client' do
