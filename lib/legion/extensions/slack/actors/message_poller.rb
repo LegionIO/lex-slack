@@ -4,15 +4,21 @@ module Legion
   module Extensions
     module Slack
       module Actor
-        class MessagePoller
+        class MessagePoller < Legion::Extensions::Actors::Every
           include Helpers::Client
-          include Legion::Logging::Helper
 
-          def initialize
+          def runner_class = self.class
+
+          def initialize(**)
             @hwm = {}
+            super
           end
 
-          def run
+          def time
+            settings.dig('lex-slack', 'poller', 'interval') || 30
+          end
+
+          def action(**)
             return unless enabled?
             return if channels.empty?
 
@@ -22,10 +28,6 @@ module Legion
             channels.each do |channel_id|
               poll_channel(channel_id, token: token, limit: limit)
             end
-          end
-
-          def interval
-            settings.dig('lex-slack', 'poller', 'interval') || 30
           end
 
           private
@@ -69,7 +71,7 @@ module Legion
           end
 
           def settings
-            return Legion::Settings.to_h if defined?(Legion::Settings)
+            return Legion::Settings if defined?(Legion::Settings)
 
             {}
           end

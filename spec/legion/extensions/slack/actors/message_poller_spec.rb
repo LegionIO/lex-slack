@@ -8,25 +8,25 @@ RSpec.describe Legion::Extensions::Slack::Actor::MessagePoller do
     allow(poller).to receive(:api_connection).and_return(mock_conn)
   end
 
-  describe '#interval' do
+  describe '#time' do
     it 'returns 30 when no settings' do
       allow(poller).to receive(:settings).and_return({})
-      expect(poller.interval).to eq(30)
+      expect(poller.time).to eq(30)
     end
 
     it 'returns configured interval' do
       allow(poller).to receive(:settings).and_return({ 'lex-slack' => { 'poller' => { 'interval' => 60 } } })
-      expect(poller.interval).to eq(60)
+      expect(poller.time).to eq(60)
     end
   end
 
-  describe '#run' do
+  describe '#action' do
     it 'does nothing when disabled' do
       allow(poller).to receive(:settings).and_return(
         { 'lex-slack' => { 'poller' => { 'enabled' => false, 'channels' => ['C1'] } } }
       )
       expect(mock_conn).not_to receive(:get)
-      poller.run
+      poller.action
     end
 
     it 'does nothing when channels empty' do
@@ -34,13 +34,13 @@ RSpec.describe Legion::Extensions::Slack::Actor::MessagePoller do
         { 'lex-slack' => { 'poller' => { 'enabled' => true, 'channels' => [] } } }
       )
       expect(mock_conn).not_to receive(:get)
-      poller.run
+      poller.action
     end
 
     it 'does nothing when poller key missing' do
       allow(poller).to receive(:settings).and_return({})
       expect(mock_conn).not_to receive(:get)
-      poller.run
+      poller.action
     end
 
     it 'polls each channel when enabled' do
@@ -52,7 +52,7 @@ RSpec.describe Legion::Extensions::Slack::Actor::MessagePoller do
                                        .and_return(double(body: { 'ok' => true, 'messages' => [] }))
       allow(mock_conn).to receive(:get).with('conversations.history', hash_including(channel: 'C2'))
                                        .and_return(double(body: { 'ok' => true, 'messages' => [] }))
-      poller.run
+      poller.action
       expect(mock_conn).to have_received(:get).twice
     end
 
@@ -64,11 +64,11 @@ RSpec.describe Legion::Extensions::Slack::Actor::MessagePoller do
       messages = [{ 'ts' => '100.0', 'text' => 'Hello' }, { 'ts' => '200.0', 'text' => 'World' }]
       allow(mock_conn).to receive(:get).with('conversations.history', hash_including(channel: 'C1'))
                                        .and_return(double(body: { 'ok' => true, 'messages' => messages }))
-      poller.run
+      poller.action
       allow(mock_conn).to receive(:get).with('conversations.history',
                                              hash_including(oldest: '200.0'))
                                        .and_return(double(body: { 'ok' => true, 'messages' => [] }))
-      poller.run
+      poller.action
     end
 
     it 'handles api error gracefully' do
@@ -77,7 +77,7 @@ RSpec.describe Legion::Extensions::Slack::Actor::MessagePoller do
                                                               'channels' => ['C1'], 'limit' => 10 } } }
       )
       allow(mock_conn).to receive(:get).and_return(double(body: { 'ok' => false }))
-      expect { poller.run }.not_to raise_error
+      expect { poller.action }.not_to raise_error
     end
   end
 end

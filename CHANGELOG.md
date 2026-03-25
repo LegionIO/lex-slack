@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Rewrite MessagePoller as proper Every actor with correct base class, method names, and self-contained runner_class
+- Fix Settings access: use `Legion::Settings` directly instead of `Legion::Settings.to_h` (Settings is a module, not a Hash)
+
 ## [0.3.1] - 2026-03-22
 
 ### Changed
