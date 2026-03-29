@@ -8,7 +8,7 @@
 
 Comprehensive Legion Extension connecting LegionIO to Slack. Covers the Slack Web API (messaging, conversations, users, reactions, files, pins, bookmarks, reminders, usergroups, views, search), incoming webhooks, Block Kit builder, and a configurable message polling actor.
 
-**Version**: 0.3.0
+**Version**: 0.3.2
 **GitHub**: https://github.com/LegionIO/lex-slack
 **License**: MIT
 
@@ -67,6 +67,10 @@ Configurable polling actor, disabled by default. Settings:
 ```
 
 Uses in-memory high-water mark per channel. Publishes to Legion transport if available.
+
+## Known Issues
+
+- MessagePoller has unreleased fixes pending: needs rewrite as proper Every actor with correct base class, method names, and self-contained runner_class. Settings access uses `Legion::Settings` directly (not `.to_h`).
 
 ## Dependencies
 
